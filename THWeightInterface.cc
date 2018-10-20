@@ -1,6 +1,6 @@
 #include <Python.h>
 #include "THWeightInterface.h"
-//#include <TLorentzVector.h> // TLorentzVector
+#include <TLorentzVector.h> // TLorentzVector
 #include <fstream>
 #include <iostream> // std::cerr, std::fixed
 #include <boost/filesystem.hpp> // boost::filesystem::
@@ -42,6 +42,7 @@ THWeightInterface::THWeightInterface(
   applicationLoadStr.assign(std::istreambuf_iterator<char>(applicationLoadFile), std::istreambuf_iterator<char>());
   std::cout << "set program 1" << '\n';
 
+  Py_Initialize();
   PyObject * kl_py = PyFloat_FromDouble(static_cast<double>(kl));
   PyObject * kt_py = PyFloat_FromDouble(static_cast<double>(kt));
   PyObject * c2_py = PyFloat_FromDouble(static_cast<double>(c2));
@@ -53,40 +54,49 @@ THWeightInterface::THWeightInterface(
   // https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-a-python-script
   // https://gist.github.com/rjzak/5681680
   Py_SetProgramName(const_cast<char *>("do_weight"));
-  Py_Initialize();
+  //Py_Initialize();
   std::cout << "set program 2" << '\n';
   moduleMainString_ = PyString_FromString("__main__");
   std::cout << "set program 3" << '\n';
   moduleMain_ = PyImport_Import(moduleMainString_);
   std::cout << "set program 4" << '\n';
   PyRun_SimpleString(applicationLoadStr.c_str());
-  Py_Finalize();
+  //Py_Finalize();
   std::cout << "set program" << '\n';
 
   // Load the class
+  //Py_Initialize();
   cms_base = PyString_FromString(std::getenv("CMSSW_BASE"));
   PyObject* func_load = PyObject_GetAttrString(moduleMain_, "load");
   PyObject* args_load = PyTuple_Pack(1, cms_base);
   modeldata_ = PyObject_CallObject(func_load, args_load);
+  //Py_Finalize();
   std::cout << "loaded modeldata " << '\n';
 
 
   // calculate and return CX
+  //Py_Initialize();
   PyObject* func_CX = PyObject_GetAttrString(moduleMain_, "getCX");
   PyObject* args_CX = PyTuple_Pack(6,  kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_);
   CX = PyFloat_AsDouble(PyObject_CallObject(func_CX, args_CX));
   std::cout << "CX " << '\n';
+  //Py_Finalize();
 
   // calculate and return BM -- it takes a bit of time (~30sec), but it can be done previouslly for large lists
+  //Py_Initialize();
   PyObject* func_BM = PyObject_GetAttrString(moduleMain_, "getBM");
   PyObject* args_BM = PyTuple_Pack(7,  kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_, cms_base);
   BM   = PyInt_AsLong(PyObject_CallObject(func_BM, args_BM));
+  //Py_Finalize();
 
   // calculate and return normalization
+  //Py_Initialize();
   PyObject* func_Norm = PyObject_GetAttrString(moduleMain_, "getNorm");
   Norm   = PyFloat_AsDouble(PyObject_CallObject(func_Norm, args_BM));
+  //Py_Finalize();
 
   for (unsigned int bm_list = 0; bm_list < 13; bm_list++){
+    //Py_Initialize();
     PyObject* args_BM_list = PyTuple_Pack(7,
       PyFloat_FromDouble(static_cast<double>(klJHEP[bm_list])),
       PyFloat_FromDouble(static_cast<double>(ktJHEP[bm_list])),
@@ -96,6 +106,7 @@ THWeightInterface::THWeightInterface(
       modeldata_, cms_base);
     NormBM.push_back(PyFloat_AsDouble(PyObject_CallObject(func_Norm, args_BM_list)));
     Py_XDECREF(args_BM_list);
+    //Py_Finalize();
   }
 
   Py_XDECREF(func_CX);
