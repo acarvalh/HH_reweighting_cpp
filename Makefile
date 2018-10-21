@@ -10,7 +10,7 @@
 # "make clean" removes all files created by "make"
 #
 # Dependencies on included files are automatically taken care of
-# 
+#
 ################################################################################
 all: rmxeq mkdep mkxeq
 .PHONY: all
@@ -41,7 +41,7 @@ PYLIBS = $(shell python-config --libs)
 PYPREFIX = $(shell python-config --prefix)
 
 # scheduling and optimization options (such as -DSSE -DSSE2 -DP4)
-CFLAGS = -ansi -O3 -Wall #-std=c++11 #$(ROOTCFLAGS)
+CFLAGS = -ansi -O3 -Wall  #-std=c++11 #$(ROOTCFLAGS)
 #CXXFLAGS += -std=c++11x
 #-I /opt/rh/python27/root/usr/include/python2.7
 
