@@ -37,9 +37,9 @@ int main()
   double c2 = 0.0;
   double cg = 0.0;
   double c2g = 0.0;
-  double energy = 13.; // TeV
+  //double energy = 13.; // TeV
   std::vector<double> NormBM;
-  THWeightInterface THWeight_calc(CX, BM, Norm, kl, kt, c2, cg, c2g, NormBM, energy);
+  THWeightInterface THWeight_calc(CX, BM, Norm, kl, kt, c2, cg, c2g, NormBM);
   double mhh_gen = 0.;
   double costS_gen = 0.;
   mhh_gen = ( genHiggs1 + genHiggs2 ).M();
