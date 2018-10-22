@@ -25,14 +25,9 @@ MODULES = THWeightInterface
 
 MDIR = ./
 
-
 # root
 ROOTINCS = $(shell root-config --cflags)
 ROOTLIBS = $(shell root-config --glibs)
-
-# gsl
-GSLINCS = $(shell gsl-config --cflags)
-GSLLIBS = $(shell gsl-config --libs)
 
 # PY
 PYINCS = $(shell python-config --cflags)
@@ -41,19 +36,13 @@ PYLIBS = $(shell python-config --libs)
 PYPREFIX = $(shell python-config --prefix)
 
 # scheduling and optimization options (such as -DSSE -DSSE2 -DP4)
-CFLAGS = -ansi -O3 -Wall  #-std=c++11 #$(ROOTCFLAGS)
-#CXXFLAGS += -std=c++11x
-#-I /opt/rh/python27/root/usr/include/python2.7
+CFLAGS = -ansi -O3 -Wall
 
 # additional include directories
 INCPATH = $(PYINCS) $(ROOTINCS)
 
 # additional libraries to be included
-### find your Python.h with the command: find / -name Python.h 2>/dev/null
-LIBS =  -lboost_system $(ROOTLIBS)  $(PYLIBS) -L$(PYPREFIX)/lib #  #-lpython2.7 $(PYLD)
-# -L/usr/lib/python2.7/config -lGenVector
-# -I/opt/rh/python27/root/usr/include/python2.7/
-#-L/cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw-patch/CMSSW_9_4_6_patch1/external/slc6_amd64_gcc630/bin
+LIBS =  -lboost_system $(ROOTLIBS)  $(PYLIBS) -L$(PYPREFIX)/lib
 ############################## do not change ###################################
 
 SHELL=/bin/bash

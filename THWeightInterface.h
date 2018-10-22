@@ -7,9 +7,9 @@
 #include <vector> // std::vector<>
 #include <string> // std::string
 #include <map> // std::map<,>
-//#include <TLorentzVector.h> // TLorentzVector
+#include <TLorentzVector.h> // TLorentzVector
 
-//double comp_cosThetaS(const TLorentzVector& hadTauP4_lead, const TLorentzVector& hadTauP4_sublead);
+double comp_cosThetaS(const TLorentzVector& hadTauP4_lead, const TLorentzVector& hadTauP4_sublead);
 
 class THWeightInterface
 {
