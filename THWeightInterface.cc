@@ -19,7 +19,8 @@ THWeightInterface::THWeightInterface(
   const double & c2,
   const double & cg,
   const double & c2g,
-  std::vector<double> & NormBM
+  std::vector<double> & NormBM,
+  const double energy
 )
   //: mvaFileName_(LocalFileInPath(mvaFileName).fullPath())
   //, mvaInputVariables_(mvaInputVariables)
@@ -63,10 +64,10 @@ THWeightInterface::THWeightInterface(
   // Load the class
   cms_base = PyString_FromString(std::getenv("CMSSW_BASE"));
   PyObject* func_load = PyObject_GetAttrString(moduleMain_, "load");
-  PyObject* args_load = PyTuple_Pack(1, cms_base);
+  PyObject * energy_py = PyFloat_FromDouble(static_cast<double>(energy));
+  PyObject* args_load = PyTuple_Pack(2, cms_base, energy_py);
   modeldata_ = PyObject_CallObject(func_load, args_load);
   std::cout << "loaded modeldata " << '\n';
-
 
   // calculate and return CX
   PyObject* func_CX = PyObject_GetAttrString(moduleMain_, "getCX");
