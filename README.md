@@ -21,4 +21,5 @@ make make_weights
 ./make_weights
 '''
 
-There are two
+There is only one input that is required from the user:
+the histogram called in evaluate_weight should be constructed from the sum of events of the samples you are actually using to reweight, without any selection, see [here] (https://github.com/acarvalh/HH_reweighting_cpp/blob/master/do_weight.py#L25-L27).

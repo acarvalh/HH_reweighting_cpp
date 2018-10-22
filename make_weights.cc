@@ -47,7 +47,7 @@ int main()
   double THWeight = 1.0;
   if (mhh_gen > 247.) THWeight = THWeight_calc(mhh_gen, costS_gen, kl, kt, c2, cg, c2g, Norm, WeightBM );
   if ( isDEBUG ) {
-    std::cout << "entry: (gen_mhh = " << mhh_gen << ", gen_cosTheta* " << costS_gen << ")" << std::endl;
+    std::cout << "entry: (gen_mhh = " << mhh_gen << ", gen_cosTheta* = " << costS_gen << ")" << std::endl;
     std::cout<< "genHiggses weights to input entry on the requested point: " << THWeight << " ( closest shape benchmark : " << BM << " )" << std::endl;
     std::cout << "Weights for " << WeightBM.size() << " theory points = SM + 12 shape benchmarks: \n ";
     for (unsigned int bm_list = 0; bm_list < WeightBM.size(); bm_list++) std::cout <<  WeightBM[bm_list] << " ";
