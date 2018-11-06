@@ -21,7 +21,8 @@ public:
               const double & c2,
               const double & cg,
               const double & c2g,
-              std::vector<double> & NormBM
+              std::vector<double> & NormBM,
+              const double & energy
              );
   ~THWeightInterface();
 

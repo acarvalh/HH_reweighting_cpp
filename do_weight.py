@@ -13,7 +13,9 @@ def load(cms_base, energy) :
         model.ReadCoefficients2(14, cms_base)
     return model
 
-def getCX(kl, kt, c2, cg, c2g, model) : return model.functionGF(kl, kt, c2, cg, c2g, model.A13tev)
+def getCX(kl, kt, c2, cg, c2g, model) :
+    if energy == 14 : return model.functionGF(kl, kt, c2, cg, c2g, model.A14tev)
+    else : return model.functionGF(kl, kt, c2, cg, c2g, model.A13tev)
 
 def getBM(kl, kt, c2, cg, c2g, model, cms_base) :
     histfile = cms_base+"/src/Support/NonResonant/Distros_5p_SM3M_sumBenchJHEP_13TeV_19-4.root"

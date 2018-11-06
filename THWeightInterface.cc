@@ -19,7 +19,8 @@ THWeightInterface::THWeightInterface(
   const double & c2,
   const double & cg,
   const double & c2g,
-  std::vector<double> & NormBM
+  std::vector<double> & NormBM,
+  const double & energy
 )
   //: mvaFileName_(LocalFileInPath(mvaFileName).fullPath())
   //, mvaInputVariables_(mvaInputVariables)
@@ -49,7 +50,7 @@ THWeightInterface::THWeightInterface(
   PyObject * c2_py = PyFloat_FromDouble(static_cast<double>(c2));
   PyObject * cg_py = PyFloat_FromDouble(static_cast<double>(cg));
   PyObject * c2g_py = PyFloat_FromDouble(static_cast<double>(c2g));
-  std::cout << "converted doubles " << '\n';
+  std::cout << "converted doubles "<< kl << " " << kt << " " << c2 << '\n';
 
   // https://ubuntuforums.org/archive/index.php/t-324544.html
   // https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-a-python-script
@@ -69,7 +70,9 @@ THWeightInterface::THWeightInterface(
 
   // calculate and return CX
   PyObject* func_CX = PyObject_GetAttrString(moduleMain_, "getCX");
-  PyObject* args_CX = PyTuple_Pack(6,  kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_);
+  std::cout << "CX load" << '\n';
+  PyObject* args_CX = PyTuple_Pack(6, kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_);
+  std::cout << "CX args" << '\n';
   CX = PyFloat_AsDouble(PyObject_CallObject(func_CX, args_CX));
   std::cout << "CX " << '\n';
 
