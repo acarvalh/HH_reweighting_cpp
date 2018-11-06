@@ -37,19 +37,20 @@ int main()
   double c2 = 0.0;
   double cg = 0.0;
   double c2g = 0.0;
-  double energy = 13.; // TeV
+  double energy = 14.; // TeV
   std::vector<double> NormBM;
   THWeightInterface THWeight_calc(CX, BM, Norm, kl, kt, c2, cg, c2g, NormBM, energy);
   double mhh_gen = 0.;
   double costS_gen = 0.;
-  mhh_gen = ( genHiggs1 + genHiggs2 ).M();
+  mhh_gen =  ( genHiggs1 + genHiggs2 ).M();
   costS_gen = comp_cosThetaS( genHiggs1 , genHiggs1 );
   std::vector<double> WeightBM;
   double THWeight = 1.0;
-  if (mhh_gen > 247.) THWeight = THWeight_calc(mhh_gen, costS_gen, kl, kt, c2, cg, c2g, Norm, WeightBM );
+  if (mhh_gen > 247.) THWeight = THWeight_calc(mhh_gen, costS_gen, kl, kt, c2, cg, c2g, Norm, WeightBM, energy );
   if ( isDEBUG ) {
     std::cout << "entry: (gen_mhh = " << mhh_gen << ", gen_cosTheta* = " << costS_gen << ")" << std::endl;
-    std::cout<< "genHiggses weights to input entry on the requested point: " << THWeight << " ( closest shape benchmark : " << BM << " )" << std::endl;
+    std::cout<< "genHiggses weights to input entry on the requested point: " << THWeight << std::endl;
+    if ( energy == 13. ) std::cout <<" ( closest shape benchmark : " << BM << " )" << std::endl;
     std::cout << "Weights for " << WeightBM.size() << " theory points = SM + 12 shape benchmarks: \n ";
     for (unsigned int bm_list = 0; bm_list < WeightBM.size(); bm_list++) std::cout <<  WeightBM[bm_list] << " ";
     std::cout << '\n';

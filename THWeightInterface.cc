@@ -75,17 +75,23 @@ THWeightInterface::THWeightInterface(
   CX = PyFloat_AsDouble(PyObject_CallObject(func_CX, args_CX));
   std::cout << "CX " << '\n';
 
-  // calculate and return BM
-  // -- it takes a bit of time (~30sec), but it can be done previouslly for large lists
-  PyObject* func_BM = PyObject_GetAttrString(moduleMain_, "getBM");
-  PyObject* args_BM = PyTuple_Pack(7,  kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_, cms_base);
-  BM   = PyInt_AsLong(PyObject_CallObject(func_BM, args_BM));
-
   // calculate and return normalization
+  PyObject* args_BM = PyTuple_Pack(8,
+    kl_py, kt_py, c2_py, cg_py, c2g_py,
+    PyFloat_FromDouble(static_cast<double>(energy)),
+    modeldata_, cms_base
+  );
   PyObject* func_Norm = PyObject_GetAttrString(moduleMain_, "getNorm");
   Norm   = PyFloat_AsDouble(PyObject_CallObject(func_Norm, args_BM));
 
+  // calculate and return BM
+  if (energy == 13) {
+  // -- it takes a bit of time (~30sec), but it can be done previouslly for large lists
+  PyObject* func_BM = PyObject_GetAttrString(moduleMain_, "getBM");
+  BM   = PyInt_AsLong(PyObject_CallObject(func_BM, args_BM));
+
   for (unsigned int bm_list = 0; bm_list < 13; bm_list++){
+    std::cout << "BM " << bm_list << '\n';
     PyObject* args_BM_list = PyTuple_Pack(7,
       PyFloat_FromDouble(static_cast<double>(klJHEP[bm_list])),
       PyFloat_FromDouble(static_cast<double>(ktJHEP[bm_list])),
@@ -96,12 +102,13 @@ THWeightInterface::THWeightInterface(
     NormBM.push_back(PyFloat_AsDouble(PyObject_CallObject(func_Norm, args_BM_list)));
     Py_XDECREF(args_BM_list);
   }
+  Py_XDECREF(func_BM);
+  Py_XDECREF(func_Norm);
+  }
 
   Py_XDECREF(func_CX);
   Py_XDECREF(args_CX);
-  Py_XDECREF(func_BM);
   Py_XDECREF(args_BM);
-  Py_XDECREF(func_Norm);
 
   Py_XDECREF(kl_py);
   Py_XDECREF(kt_py);
@@ -131,13 +138,15 @@ THWeightInterface::operator()(
   const double & cg,
   const double & c2g,
   const double & normalization,
-  std::vector<double> & WeightBM
+  std::vector<double> & WeightBM,
+  const double & energy
 ) const
 {
 
   // calculate and return normalization
+  std::cout << "evaluate_weight " << '\n';
   PyObject* func_Weight = PyObject_GetAttrString(moduleMain_, "evaluate_weight");
-  PyObject* args_Weight = PyTuple_Pack(10,
+  PyObject* args_Weight = PyTuple_Pack(11,
     PyFloat_FromDouble(static_cast<double>(kl)),
     PyFloat_FromDouble(static_cast<double>(kt)),
     PyFloat_FromDouble(static_cast<double>(c2)),
@@ -146,24 +155,28 @@ THWeightInterface::operator()(
     PyFloat_FromDouble(static_cast<double>(mhh_gen)),
     PyFloat_FromDouble(static_cast<double>(costSgen_gen)),
     PyFloat_FromDouble(static_cast<double>(normalization)),
+    PyFloat_FromDouble(static_cast<double>(energy)),
     cms_base, modeldata_
   );
   PyObject* Weightpy = PyObject_CallObject(func_Weight, args_Weight);
   double THWeight   = PyFloat_AsDouble(Weightpy);
 
-  for (unsigned int bm_list = 0; bm_list < 13; bm_list++){
-    PyObject* args_BM_list = PyTuple_Pack(10,
-      PyFloat_FromDouble(static_cast<double>(klJHEP[bm_list])),
-      PyFloat_FromDouble(static_cast<double>(ktJHEP[bm_list])),
-      PyFloat_FromDouble(static_cast<double>(c2JHEP[bm_list])),
-      PyFloat_FromDouble(static_cast<double>(cgJHEP[bm_list])),
-      PyFloat_FromDouble(static_cast<double>(c2gJHEP[bm_list])),
-      PyFloat_FromDouble(static_cast<double>(mhh_gen)),
-      PyFloat_FromDouble(static_cast<double>(costSgen_gen)),
-      PyFloat_FromDouble(static_cast<double>(normalization)),
-      cms_base, modeldata_);
-    WeightBM.push_back(PyFloat_AsDouble(PyObject_CallObject(func_Weight, args_BM_list)));
-    Py_XDECREF(args_BM_list);
+  if (energy == 13) {
+    for (unsigned int bm_list = 0; bm_list < 13; bm_list++){
+      PyObject* args_BM_list = PyTuple_Pack(11,
+        PyFloat_FromDouble(static_cast<double>(klJHEP[bm_list])),
+        PyFloat_FromDouble(static_cast<double>(ktJHEP[bm_list])),
+        PyFloat_FromDouble(static_cast<double>(c2JHEP[bm_list])),
+        PyFloat_FromDouble(static_cast<double>(cgJHEP[bm_list])),
+        PyFloat_FromDouble(static_cast<double>(c2gJHEP[bm_list])),
+        PyFloat_FromDouble(static_cast<double>(mhh_gen)),
+        PyFloat_FromDouble(static_cast<double>(costSgen_gen)),
+        PyFloat_FromDouble(static_cast<double>(normalization)),
+        PyFloat_FromDouble(static_cast<double>(energy)),
+        cms_base, modeldata_);
+      WeightBM.push_back(PyFloat_AsDouble(PyObject_CallObject(func_Weight, args_BM_list)));
+      Py_XDECREF(args_BM_list);
+    }
   }
 
   return THWeight;

@@ -36,7 +36,8 @@ public:
     const double & cg,
     const double & c2g,
     const double & normalization,
-    std::vector<double> & WeightBM
+    std::vector<double> & WeightBM,
+    const double & energy
   ) const;
 
 private:
