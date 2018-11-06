@@ -64,15 +64,13 @@ THWeightInterface::THWeightInterface(
   // Load the class
   cms_base = PyString_FromString(std::getenv("CMSSW_BASE"));
   PyObject* func_load = PyObject_GetAttrString(moduleMain_, "load");
-  PyObject* args_load = PyTuple_Pack(1, cms_base);
+  PyObject* args_load = PyTuple_Pack(2, cms_base, PyFloat_FromDouble(static_cast<double>(energy)));
   modeldata_ = PyObject_CallObject(func_load, args_load);
   std::cout << "loaded modeldata " << '\n';
 
   // calculate and return CX
   PyObject* func_CX = PyObject_GetAttrString(moduleMain_, "getCX");
-  std::cout << "CX load" << '\n';
   PyObject* args_CX = PyTuple_Pack(6, kl_py, kt_py, c2_py, cg_py, c2g_py, modeldata_);
-  std::cout << "CX args" << '\n';
   CX = PyFloat_AsDouble(PyObject_CallObject(func_CX, args_CX));
   std::cout << "CX " << '\n';
 

@@ -4,6 +4,7 @@ import shutil,subprocess
 from HHStatAnalysis.AnalyticalModels.NonResonantModel import NonResonantModel
 
 def load(cms_base, energy) :
+    print ("load model py", energy)
     model = NonResonantModel()
     if energy == 13 :
         print ("load model for 13 TeV")
